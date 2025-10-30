@@ -28,23 +28,15 @@ async def send_daily_message():
     except Exception as e:
         print(f"Error: {e}")
 
-def schedule_jobs():
-    with open("messages.json", "r", encoding="utf-8") as f:
-        messages = json.load(f)
-    for time_str in messages.keys():
-        schedule.every().day.at(time_str).do(lambda: asyncio.create_task(send_daily_message()))
-
-
 async def scheduler_loop():
     while True:
-        schedule.run_pending()
-        await asyncio.sleep(1)
+        await send_daily_message()
+        await asyncio.sleep(60)
 
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 
 async def main():
-    schedule_jobs()
     asyncio.create_task(scheduler_loop())
     await app.run_polling()
 
