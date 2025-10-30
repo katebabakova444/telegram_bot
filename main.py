@@ -1,43 +1,52 @@
+import asyncio
 import json
-import random
-import schedule
-import time
-from telegram import Bot
-from dotenv import load_dotenv
 import os
-import threading
-from datetime import datetime, date, timedelta
-from get_chat_id import BOT_TOKEN
+from datetime import datetime
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram import Update
+import schedule
+from dotenv import load_dotenv
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-bot = Bot(token=BOT_TOKEN)
 
-with open("messages.json", "r", encoding="utf-8") as f:
-    messages = json.load(f)
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("✅ Bot is working!")
 
-def send_daily_message():
-    if messages:
-        msg = messages.pop(0)
-        text = f"{msg['message']}\n\nLocation:{msg['location']}"
 
-        bot.send_message(chat_id=CHAT_ID, text=text)
+async def send_daily_message():
+    now = datetime.now().strftime("%H:%M")
+    try:
+        with open("messages.json", "r", encoding="utf-8") as f:
+            messages = json.load(f)
+        text = messages.get(now, "")
+        if text:
+            await app.bot.send_message(chat_id=CHAT_ID, text=text)
+        else:
+            print(f"[{now}] No messages.")
+    except Exception as e:
+        print(f"Error: {e}")
 
-        with open("messages.json", "w", encoding="utf-8") as f:
-            json.dump(messages, f, ensure_ascii=False, indent=2)
+def schedule_jobs():
+    with open("messages.json", "r", encoding="utf-8") as f:
+        messages = json.load(f)
+    for time_str in messages.keys():
+        schedule.every().day.at(time_str).do(lambda: asyncio.create_task(send_daily_message()))
 
-    else:
-        bot.send_message(chat_id=CHAT_ID, text=" ")
 
-schedule.every().day.at("10:11").do(send_daily_message)
-
-def run_scheduler():
+async def scheduler_loop():
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        await asyncio.sleep(1)
+
+app = ApplicationBuilder().token(BOT_TOKEN).build()
+app.add_handler(CommandHandler("start", start))
+
+async def main():
+    schedule_jobs()
+    asyncio.create_task(scheduler_loop())
+    await app.run_polling()
 
 if __name__ == "__main__":
-    t = threading.Thread(target=run_scheduler)
-    t.start()
-    print("Bot is working.. Waiting for 10:11")
+    asyncio.run(main())
