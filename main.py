@@ -10,6 +10,11 @@ from dotenv import load_dotenv
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
+with open("messages.json", "r", encoding="utf-8") as f:
+    data = json.load(f)
+messages_by_date = {item["date"]: item["message"] for item in data}
+with open("mesages_by_date.json", "w", encoding="utf-8") as f:
+    json.dump("messages_by_date.json", "w", ensure_ascii=False, indent=4)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Bot is working!")
@@ -18,9 +23,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_daily_message():
     now = datetime.now().strftime("%H:%M")
     try:
-        with open("messages.json", "r", encoding="utf-8") as f:
+        with open("messages_by_date.json", "r", encoding="utf-8") as f:
             messages = json.load(f)
-        text = messages.get(now, "")
+        now = datetime.now().strftime("%Y-%m-%d%T%H")
+        text = messages.get(now, None)
         if text:
             await app.bot.send_message(chat_id=CHAT_ID, text=text)
         else:
