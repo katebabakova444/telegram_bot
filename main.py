@@ -13,15 +13,14 @@ CHAT_ID = os.getenv("CHAT_ID")
 with open("messages.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 messages_by_date = {item["date"]: item["message"] for item in data}
-with open("mesages_by_date.json", "w", encoding="utf-8") as f:
-    json.dump("messages_by_date.json", "w", ensure_ascii=False, indent=4)
+with open("messages_by_date.json", "w", encoding="utf-8") as f:
+    json.dump(messages_by_date, f, ensure_ascii=False, indent=4)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Bot is working!")
 
 
 async def send_daily_message():
-    now = datetime.now().strftime("%H:%M")
     try:
         with open("messages_by_date.json", "r", encoding="utf-8") as f:
             messages = json.load(f)
@@ -39,12 +38,17 @@ async def scheduler_loop():
         await send_daily_message()
         await asyncio.sleep(60)
 
-app = ApplicationBuilder().token(BOT_TOKEN).build()
-app.add_handler(CommandHandler("start", start))
-
 async def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+
     asyncio.create_task(scheduler_loop())
-    await app.run_polling()
+    await app.initialize()
+    await app.start()
+    await app.bot.set_my_commands([("start", "Start the bot")])
+    await asyncio.Event().wait()
+    await app.stop()
+    await app.shutdown()
 
 if __name__ == "__main__":
     asyncio.run(main())
