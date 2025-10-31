@@ -22,7 +22,7 @@ def send_scheduled_message():
             url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
             data = {"chat_id": CHAT_ID, "text": text}
             response = requests.post(url, data=data)
-            print("✅ Sent!" if response.ok else f"❌ Failed: {response.text}")
+            return response
     except Exception as e:
         print(f"⚠️ Error in scheduler: {e}")
 
