@@ -28,8 +28,8 @@ async def send_daily_message():
         with open("messages_by_date.json", "r", encoding="utf-8") as f:
             messages = json.load(f)
         if now in messages:
-           text = messages.get[now]
-           await bot.send_message(chat_id=CHAT_ID, text=text)
+           text = messages[now]
+           await tg_app.bot.send_message(chat_id=CHAT_ID, text=text)
            print(f"[{now}] Message send: {text}")
         else:
             print(f"[{now}] No message.")
@@ -47,7 +47,7 @@ async def webhook():
     try:
         data = request.get_json(force=True)
         print(f"Webhook received data: {data}")
-        update = Update.de_json(data, bot)
+        update = Update.de_json(data, bot=tg_app.bot)
         await tg_app.process_update(update)
         return "OK"
     except Exception as e:
@@ -60,10 +60,8 @@ def home():
 
 if __name__ == "__main__":
     tg_app.add_handler(CommandHandler("start", start))
-    loop = asyncio.get_event_loop()
-    loop.create_task(scheduler_loop())
-
-    asyncio.get_event_loop().run_until_complete(
-        bot.set_webhook(url=WEBHOOK_URL)
-    )
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8443)))
+    async def main():
+        await tg_app.bot.set_webhook(url=WEBHOOK_URL)
+        asyncio.create_task(scheduler_loop())
+        app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8443)))
+    asyncio.run(main())
