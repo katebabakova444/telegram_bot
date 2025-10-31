@@ -63,5 +63,5 @@ if __name__ == "__main__":
     async def main():
         await tg_app.bot.set_webhook(url=WEBHOOK_URL)
         asyncio.create_task(scheduler_loop())
-        app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8443)))
+        app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 4545)))
     asyncio.run(main())
