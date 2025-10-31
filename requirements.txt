@@ -2,4 +2,5 @@ python-telegram-bot==20.7
 schedule
 python-dotenv
 Flask[async]==2.3.2
-pyTelegramBotAPI
+aiohttp==3.9.1
+gunicorn==21.2.0
