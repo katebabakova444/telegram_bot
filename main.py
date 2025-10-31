@@ -11,10 +11,10 @@ TELEGRAM_URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def home():
     return "Telegram scheduler bot is running!"
 
 start_scheduler()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4545)
+    app.run(host='0.0.0.0', port=10000)
