@@ -1,5 +1,5 @@
 python-telegram-bot==20.7
 python-dotenv
-Flask
-requests
-APScheduler
+Flask==2.3.3
+requests==2.31.0
+APScheduler==3.10.4
