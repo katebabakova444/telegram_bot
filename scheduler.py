@@ -4,8 +4,11 @@ import json
 import requests
 import os
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def send_scheduled_message():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
