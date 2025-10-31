@@ -54,6 +54,9 @@ async def webhook():
     except Exception as e:
         print(f"Webhook error: {e}")
         return f"Internal Server Error: {e}", 200
+@app.route("/")
+def home():
+    return "Telegram bot is running"
 
 
 if __name__ == "__main__":
