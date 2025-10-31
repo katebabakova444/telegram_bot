@@ -47,11 +47,13 @@ async def scheduler_loop():
 async def webhook():
     try:
         data = request.get_json(force=True)
+        print(f"Webhook received data: {data}")
         update = Update.de_json(data, bot)
         await tg_app.process_update(update)
         return "OK"
     except Exception as e:
-        return f"Error: {e}", 400
+        print(f"Webhook error: {e}")
+        return f"Internal Server Error: {e}", 200
 
 
 if __name__ == "__main__":
