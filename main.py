@@ -2,12 +2,15 @@ from flask import Flask
 from scheduler import start_scheduler
 import os
 from dotenv import load_dotenv
+from config import TOKEN, CHAT_ID
 
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 TELEGRAM_URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+print(f"TOKEN: {TOKEN}")
+print(f"CHAT_ID: {CHAT_ID}")
 app = Flask(__name__)
 
 @app.route('/')

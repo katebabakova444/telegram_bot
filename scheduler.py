@@ -2,13 +2,13 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 import json
 import requests
+from dotenv import load_dotenv
 import os
 
 TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-from dotenv import load_dotenv
-
 load_dotenv()
+from config import TOKEN, CHAT_ID
 
 def send_scheduled_message():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -19,9 +19,12 @@ def send_scheduled_message():
         if now in messages:
             text = messages[now]
             print(f"📨 Sending: {text}")
-            url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+            url = f"https://api.telegram.org/bot8478592431:AAHHZ-WlO31WsRLd5gwHz87gXlE5EetZqdI/sendMessage"
+            print(f"URL:{url}")
             data = {"chat_id": CHAT_ID, "text": text}
             response = requests.post(url, data=data)
+            print(response.status_code)
+            print(response.text)
             return response
     except Exception as e:
         print(f"⚠️ Error in scheduler: {e}")
