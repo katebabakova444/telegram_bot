@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from scheduler import start_scheduler
 import os
 from dotenv import load_dotenv
+
 from config import TOKEN, CHAT_ID
 
 load_dotenv()
