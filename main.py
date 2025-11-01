@@ -15,15 +15,6 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return "Telegram scheduler bot is running!"
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    data = request.get_json()
-    print(data)
-    if "message" in data:
-        chat_id = data["message"]["chat"]["id"]
-        print(f"{chat_id}")
-    return "ok"
-
 start_scheduler()
 
 if __name__ == '__main__':
