@@ -9,13 +9,19 @@ load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 TELEGRAM_URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-print(f"TOKEN: {TOKEN}")
-print(f"CHAT_ID: {CHAT_ID}")
 app = Flask(__name__)
 
 @app.route('/')
 def home():
     return "Telegram scheduler bot is running!"
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.get_json()
+    print(data)
+    if "message" in data:
+        chat_id = data["message"]["chat"]["id"]
+        print(f"{chat_id}")
+    return "ok"
 
 start_scheduler()
 
