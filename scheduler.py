@@ -17,6 +17,7 @@ def send_scheduled_message():
         with open("messages_by_date.json", "r", encoding='utf-8') as f:
             messages = json.load(f)
         if now in messages:
+            print(f"Sending ID:{CHAT_ID}")
             text = messages[now]
             print(f"📨 Sending: {text}")
             url = f"https://api.telegram.org/bot8478592431:AAHHZ-WlO31WsRLd5gwHz87gXlE5EetZqdI/sendMessage"
